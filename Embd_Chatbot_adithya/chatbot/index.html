@@ -553,32 +553,35 @@
           if (apiKey) {
             localStorage.setItem("openai_api_key", apiKey);
             console.log("[CONFIG] API key saved to localStorage");
-            
+
             // Show success message
-            const info = document.querySelector('.api-key-info');
+            const info = document.querySelector(".api-key-info");
             if (info) {
               const originalText = info.innerHTML;
-              info.innerHTML = '✅ <strong>Success:</strong> API key saved successfully! The chatbot will use enhanced AI responses.';
-              info.style.background = '#e8f4f8';
-              info.style.borderColor = '#bde4f0';
-              
+              info.innerHTML =
+                "✅ <strong>Success:</strong> API key saved successfully! The chatbot will use enhanced AI responses.";
+              info.style.background = "#e8f4f8";
+              info.style.borderColor = "#bde4f0";
+
               setTimeout(() => {
                 info.innerHTML = originalText;
-                info.style.background = '#e8f4f8';
-                info.style.borderColor = '#bde4f0';
+                info.style.background = "#e8f4f8";
+                info.style.borderColor = "#bde4f0";
               }, 3000);
             }
-            
+
             // Notify the client to reinitialize if available
             if (window.copilotApp && window.copilotApp.reinitialize) {
-              console.log("[CONFIG] Notifying client to reinitialize with new API key");
+              console.log(
+                "[CONFIG] Notifying client to reinitialize with new API key"
+              );
               window.copilotApp.reinitialize();
             }
           } else {
             localStorage.removeItem("openai_api_key");
             console.log("[CONFIG] API key removed from localStorage");
           }
-          
+
           setTimeout(() => {
             window.hideConfig();
           }, 500);
@@ -586,20 +589,20 @@
       };
 
       // Handle Enter key in API key input
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById("api-key-input");
         if (input) {
-          input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+          input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
               window.saveApiKey();
             }
           });
         }
-        
+
         // Close config panel when clicking outside
         const panel = document.getElementById("config-panel");
         if (panel) {
-          panel.addEventListener('click', (e) => {
+          panel.addEventListener("click", (e) => {
             if (e.target === panel) {
               window.hideConfig();
             }
@@ -609,6 +612,6 @@
     </script>
 
     <!-- Load the main client application -->
-    <script src="./client.js"></script>
+    <script type="module" src="./dist/client.js"></script>
   </body>
 </html>

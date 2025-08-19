@@ -1,6 +1,6 @@
 # Medical AI Chatbot
 
-This folder contains a standalone AI-powered chatbot interface designed for medical data management. The chatbot can interact with patient data, update vital signs, and provide medical assistance through a clean, modern interface.
+This folder contains a standalone AI-powered chatbot interface designed for medical data management. Built with TypeScript, Express.js, and OpenAI integration for enhanced medical assistance.
 
 ## Features
 
@@ -8,16 +8,30 @@ This folder contains a standalone AI-powered chatbot interface designed for medi
 - **Patient Information**: View current patient data and medical history
 - **Medication Management**: Add and manage patient medications
 - **OpenAI Integration**: Enhanced AI responses when API key is configured
-- **Real-time Communication**: Uses MCP (Model Context Protocol) for data exchange
+- **TypeScript**: Full TypeScript implementation for type safety
 - **Responsive Design**: Modern, mobile-friendly interface
-- **Quick Actions**: Pre-configured buttons for common medical tasks
+- **Security**: Helmet.js for security headers, CORS support
+
+## Project Structure
+
+```
+├── src/
+│   ├── server.ts      # Express server with OpenAI proxy
+│   ├── client.ts      # Frontend chatbot logic
+│   └── types.ts       # TypeScript type definitions
+├── dist/              # Compiled JavaScript files
+├── index.html         # Main chatbot interface
+├── package.json       # Dependencies and scripts
+├── tsconfig.json      # TypeScript configuration
+└── start.sh          # Quick startup script
+```
 
 ## Quick Start
 
 ### Option 1: Using the Startup Script (Recommended)
 
 ```bash
-./start.sh
+chmod +x start.sh && ./start.sh
 ```
 
 ### Option 2: Manual Setup
@@ -25,6 +39,9 @@ This folder contains a standalone AI-powered chatbot interface designed for medi
 ```bash
 # Install dependencies
 npm install
+
+# Build TypeScript
+npm run build
 
 # Start the server
 npm start
@@ -36,7 +53,10 @@ npm start
 # Install dependencies
 npm install
 
-# Start in development mode with auto-reload
+# Start TypeScript in watch mode (separate terminal)
+npm run watch
+
+# Start the server
 npm run dev
 ```
 

@@ -33,6 +33,10 @@ if [ ! -d "node_modules" ]; then
     fi
 fi
 
+# Build TypeScript
+echo "🔨 Building TypeScript..."
+npm run build
+
 # Start the server
 echo "🚀 Starting server..."
 npm start

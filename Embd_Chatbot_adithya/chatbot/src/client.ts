@@ -1,20 +1,28 @@
 /**
  * Medical AI Chatbot - Client Application
- * Simplified JavaScript version for browser compatibility
+ * TypeScript version with proper type definitions
  */
+
+import type {
+  ChatMessage,
+  OpenAIResponse,
+  SimpleChatbot as IChatbot,
+} from "./types.js";
 
 console.log("[AI-COPILOT] Starting Medical AI Chatbot...");
 
-// Simple chatbot functionality without MCP dependencies
-class SimpleChatbot {
+// Medical AI Chatbot implementation
+class SimpleChatbot implements IChatbot {
+  public messages: ChatMessage[] = [];
+  public isConnected: boolean = false;
+  public apiKey: string | null = null;
+
   constructor() {
-    this.messages = [];
-    this.isConnected = false;
     this.apiKey = localStorage.getItem("openai_api_key");
     this.initialize();
   }
 
-  initialize() {
+  public initialize(): void {
     console.log("[AI-COPILOT] Initializing chatbot...");
     this.setupUI();
     this.showWelcome();
@@ -22,15 +30,19 @@ class SimpleChatbot {
     this.isConnected = true;
   }
 
-  setupUI() {
+  public setupUI(): void {
     // Enable input and send button
-    const input = document.getElementById("chat-input");
-    const sendButton = document.getElementById("send-button");
-    const quickActions = document.getElementById("quick-actions");
+    const input = document.getElementById("chat-input") as HTMLTextAreaElement;
+    const sendButton = document.getElementById(
+      "send-button"
+    ) as HTMLButtonElement;
+    const quickActions = document.getElementById(
+      "quick-actions"
+    ) as HTMLElement;
 
     if (input) {
       input.disabled = false;
-      input.addEventListener("keypress", (e) => {
+      input.addEventListener("keypress", (e: KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           this.sendMessage();
@@ -47,14 +59,14 @@ class SimpleChatbot {
     }
   }
 
-  showWelcome() {
+  public showWelcome(): void {
     const welcomeState = document.getElementById("welcome-state");
     if (welcomeState) {
       welcomeState.style.display = "block";
     }
   }
 
-  updateConnectionStatus(status) {
+  public updateConnectionStatus(status: string): void {
     const connectionStatus = document.getElementById("connection-status");
     if (connectionStatus) {
       connectionStatus.textContent = status;
@@ -66,8 +78,8 @@ class SimpleChatbot {
     }
   }
 
-  async sendMessage(message = null) {
-    const input = document.getElementById("chat-input");
+  public async sendMessage(message: string | null = null): Promise<void> {
+    const input = document.getElementById("chat-input") as HTMLTextAreaElement;
     const messageText = message || (input ? input.value.trim() : "");
 
     if (!messageText) return;
@@ -85,24 +97,43 @@ class SimpleChatbot {
 
     try {
       // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Generate response
       const response = await this.generateResponse(messageText);
       this.addMessage("assistant", response);
     } catch (error) {
       console.error("[AI-COPILOT] Error generating response:", error);
-      this.addMessage("error", "Sorry, I encountered an error processing your request.");
+      this.addMessage(
+        "error",
+        "Sorry, I encountered an error processing your request."
+      );
     } finally {
       this.showTyping(false);
     }
   }
 
-  async generateResponse(message) {
+  public async generateResponse(message: string): Promise<string> {
     const lowerMessage = message.toLowerCase();
 
-    // Simple rule-based responses for medical queries
-    if (lowerMessage.includes("patient info") || lowerMessage.includes("patient information")) {
+    // If we have an API key, try to use OpenAI first for all messages
+    if (this.apiKey && this.apiKey.startsWith("sk-")) {
+      try {
+        console.log("[AI-COPILOT] Using OpenAI API for response...");
+        return await this.getOpenAIResponse(message);
+      } catch (error) {
+        console.log(
+          "[AI-COPILOT] OpenAI request failed, using fallback response"
+        );
+        // Fall through to rule-based responses
+      }
+    }
+
+    // Fallback to rule-based responses for specific medical queries
+    if (
+      lowerMessage.includes("patient info") ||
+      lowerMessage.includes("patient information")
+    ) {
       return `🏥 **Patient Information**
 
 **Current Patient:** John Doe (ID: P001)
@@ -144,7 +175,13 @@ To update, please specify the new reading (e.g., "Update blood pressure to 130/8
 
 New glucose level: ${match[1]} mg/dL has been recorded for patient John Doe.
 - Level: ${match[1]} mg/dL
-- Status: ${parseInt(match[1]) < 100 ? "Normal" : parseInt(match[1]) < 126 ? "Prediabetic range" : "Diabetic range"}
+- Status: ${
+          parseInt(match[1]) < 100
+            ? "Normal"
+            : parseInt(match[1]) < 126
+            ? "Prediabetic range"
+            : "Diabetic range"
+        }
 - Recorded at: ${new Date().toLocaleString()}`;
       }
       return `🩸 **Blood Sugar Information**
@@ -153,7 +190,10 @@ Current level: 95 mg/dL (Normal)
 To update, please specify the new level (e.g., "Update blood sugar to 110")`;
     }
 
-    if (lowerMessage.includes("medication") || lowerMessage.includes("add medication")) {
+    if (
+      lowerMessage.includes("medication") ||
+      lowerMessage.includes("add medication")
+    ) {
       return `💊 **Medication Management**
 
 **Current Medications:**
@@ -169,7 +209,10 @@ To add a new medication, please provide:
 Example: "Add Aspirin 81mg daily for heart health"`;
     }
 
-    if (lowerMessage.includes("vital signs") || lowerMessage.includes("vitals")) {
+    if (
+      lowerMessage.includes("vital signs") ||
+      lowerMessage.includes("vitals")
+    ) {
       return `📈 **Current Vital Signs**
 
 **Patient:** John Doe
@@ -183,16 +226,7 @@ Example: "Add Aspirin 81mg daily for heart health"`;
 All vital signs are within normal ranges. Last updated: ${new Date().toLocaleString()}`;
     }
 
-    // If we have an API key, try to use OpenAI
-    if (this.apiKey && this.apiKey.startsWith('sk-')) {
-      try {
-        return await this.getOpenAIResponse(message);
-      } catch (error) {
-        console.log("[AI-COPILOT] OpenAI request failed, using fallback response");
-      }
-    }
-
-    // Default response
+    // Default response when no API key is configured
     return `🏥 I'm your Medical AI Assistant. I can help you with:
 
 • **Patient Information** - View current patient data
@@ -205,25 +239,88 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
 💡 *To enable enhanced AI responses, click the ⚙️ settings icon and add your OpenAI API key.*`;
   }
 
-  async getOpenAIResponse(message) {
-    // This would require a backend proxy to avoid CORS issues
-    // For now, we'll show that the API key is configured
-    return `🤖 **Enhanced AI Response Enabled**
+  public async getOpenAIResponse(message: string): Promise<string> {
+    // Use the server proxy to call OpenAI API
+    const apiKey = this.apiKey;
 
-I can see you have configured an OpenAI API key! However, for security reasons, OpenAI API calls need to be made through a backend server to avoid exposing your API key.
+    if (!apiKey || !apiKey.startsWith("sk-")) {
+      throw new Error("Invalid API key");
+    }
 
-For now, I'm using my built-in medical knowledge to help you with:
-- Patient data management
-- Vital signs tracking  
-- Medication management
-- Medical information
+    try {
+      const response = await fetch("/api/openai/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: message,
+          apiKey: apiKey,
+        }),
+      });
 
-Your message: "${message}"
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `API Error: ${response.status} - ${
+            errorData.error || "Unknown error"
+          }`
+        );
+      }
 
-How can I assist you with medical data today?`;
+      const data: OpenAIResponse = await response.json();
+
+      if (data.choices && data.choices.length > 0) {
+        return `🤖 **AI Assistant Response:**
+
+${data.choices[0].message.content}
+
+---
+*Powered by OpenAI GPT-3.5 Turbo*`;
+      } else {
+        throw new Error("No response from OpenAI");
+      }
+    } catch (error) {
+      console.error("[AI-COPILOT] OpenAI API Error:", error);
+
+      // Handle specific error types
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (errorMessage.includes("401")) {
+        return `❌ **Authentication Error**
+
+Your OpenAI API key appears to be invalid. Please check your API key in the settings (⚙️) and make sure it's correct.
+
+Error: ${errorMessage}`;
+      } else if (errorMessage.includes("429")) {
+        return `⚠️ **Rate Limit Exceeded**
+
+You've exceeded your OpenAI API rate limit. Please wait a moment before trying again.
+
+Error: ${errorMessage}`;
+      } else if (errorMessage.includes("quota")) {
+        return `💳 **Quota Exceeded**
+
+Your OpenAI API quota has been exceeded. Please check your OpenAI account billing.
+
+Error: ${errorMessage}`;
+      } else {
+        return `🔧 **API Connection Error**
+
+Unable to connect to OpenAI API. This could be due to:
+- Network connectivity issues
+- API service issues
+- Server configuration problems
+
+Error: ${errorMessage}
+
+*Falling back to built-in responses...*`;
+      }
+    }
   }
 
-  addMessage(type, content) {
+  public addMessage(type: ChatMessage["type"], content: string): void {
     const messagesContainer = document.getElementById("chat-messages");
     if (!messagesContainer) return;
 
@@ -235,20 +332,29 @@ How can I assist you with medical data today?`;
 
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${type}`;
-    messageDiv.innerHTML = content.replace(/\n/g, '<br>');
+    messageDiv.innerHTML = content.replace(/\n/g, "<br>");
 
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Store message in history
+    const message: ChatMessage = {
+      id: Date.now().toString(),
+      type,
+      content,
+      timestamp: new Date(),
+    };
+    this.messages.push(message);
   }
 
-  showTyping(show) {
+  public showTyping(show: boolean): void {
     const typingIndicator = document.getElementById("typing-indicator");
     if (typingIndicator) {
       typingIndicator.style.display = show ? "block" : "none";
     }
   }
 
-  reconnect() {
+  public reconnect(): void {
     this.updateConnectionStatus("Reconnecting...");
     setTimeout(() => {
       this.updateConnectionStatus("Connected");
@@ -256,27 +362,38 @@ How can I assist you with medical data today?`;
     }, 2000);
   }
 
-  reinitialize() {
+  public reinitialize(): void {
     console.log("[AI-COPILOT] Reinitializing with new API key...");
     this.apiKey = localStorage.getItem("openai_api_key");
-    this.addMessage("system", "🔄 Reloaded with updated configuration");
+
+    if (this.apiKey && this.apiKey.startsWith("sk-")) {
+      this.addMessage(
+        "system",
+        "🔄 OpenAI API key updated! Enhanced AI responses are now enabled."
+      );
+    } else {
+      this.addMessage(
+        "system",
+        "🔄 Configuration updated. Using built-in medical responses."
+      );
+    }
   }
 }
 
 // Global functions for HTML event handlers
-window.sendMessage = () => {
+window.sendMessage = (): void => {
   if (window.chatbot) {
     window.chatbot.sendMessage();
   }
 };
 
-window.sendQuickMessage = (message) => {
+window.sendQuickMessage = (message: string): void => {
   if (window.chatbot) {
     window.chatbot.sendMessage(message);
   }
 };
 
-window.reconnect = () => {
+window.reconnect = (): void => {
   if (window.chatbot) {
     window.chatbot.reconnect();
   }
@@ -284,11 +401,11 @@ window.reconnect = () => {
 
 // Expose chatbot for config panel
 window.copilotApp = {
-  reinitialize: () => {
+  reinitialize: (): void => {
     if (window.chatbot) {
       window.chatbot.reinitialize();
     }
-  }
+  },
 };
 
 // Initialize chatbot when DOM is loaded

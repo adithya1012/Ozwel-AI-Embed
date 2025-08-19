@@ -2,31 +2,40 @@
   "name": "medical-ai-chatbot",
   "version": "1.0.0",
   "description": "Medical AI Chatbot Server",
-  "main": "server.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "build": "echo 'No build step required'",
-    "serve": "node server.js"
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js",
+    "dev": "npm run build && nodemon dist/server.js",
+    "watch": "tsc --watch",
+    "serve": "npm run build && node dist/server.js",
+    "clean": "rimraf dist"
   },
   "keywords": [
     "medical",
     "ai",
     "chatbot",
     "express",
-    "server"
+    "server",
+    "typescript"
   ],
   "author": "Adithya",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "helmet": "^7.0.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.23",
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^20.19.11",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=16.0.0"
