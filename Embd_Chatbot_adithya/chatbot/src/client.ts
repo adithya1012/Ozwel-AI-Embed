@@ -26,7 +26,14 @@ class SimpleChatbot implements IChatbot {
     console.log("[AI-COPILOT] Initializing chatbot...");
     this.setupUI();
     this.showWelcome();
-    this.updateConnectionStatus("Connected");
+
+    // Check if we have an API key and update status accordingly
+    if (this.apiKey && this.apiKey.startsWith("sk-")) {
+      this.updateConnectionStatus("Connected (Ozwell AI)");
+    } else {
+      this.updateConnectionStatus("Connected");
+    }
+
     this.isConnected = true;
   }
 
@@ -236,7 +243,7 @@ All vital signs are within normal ranges. Last updated: ${new Date().toLocaleStr
 
 Try asking me "Show patient info" or "Update blood pressure to 120/80"
 
-💡 *To enable enhanced AI responses, click the ⚙️ settings icon and add your OpenAI API key.*`;
+💡 *To enable enhanced AI responses, click the ⚙️ settings icon and add your Ozwell AI API key.*`;
   }
 
   public async getOpenAIResponse(message: string): Promise<string> {
@@ -276,7 +283,7 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
 ${data.choices[0].message.content}
 
 ---
-*Powered by OpenAI GPT-3.5 Turbo*`;
+*Powered by Ozwell AI*`;
       } else {
         throw new Error("No response from OpenAI");
       }
@@ -290,25 +297,25 @@ ${data.choices[0].message.content}
       if (errorMessage.includes("401")) {
         return `❌ **Authentication Error**
 
-Your OpenAI API key appears to be invalid. Please check your API key in the settings (⚙️) and make sure it's correct.
+Your Ozwell AI API key appears to be invalid. Please check your API key in the settings (⚙️) and make sure it's correct.
 
 Error: ${errorMessage}`;
       } else if (errorMessage.includes("429")) {
         return `⚠️ **Rate Limit Exceeded**
 
-You've exceeded your OpenAI API rate limit. Please wait a moment before trying again.
+You've exceeded your Ozwell AI API rate limit. Please wait a moment before trying again.
 
 Error: ${errorMessage}`;
       } else if (errorMessage.includes("quota")) {
         return `💳 **Quota Exceeded**
 
-Your OpenAI API quota has been exceeded. Please check your OpenAI account billing.
+Your Ozwell AI API quota has been exceeded. Please check your Ozwell AI account billing.
 
 Error: ${errorMessage}`;
       } else {
         return `🔧 **API Connection Error**
 
-Unable to connect to OpenAI API. This could be due to:
+Unable to connect to Ozwell AI API. This could be due to:
 - Network connectivity issues
 - API service issues
 - Server configuration problems
@@ -367,11 +374,13 @@ Error: ${errorMessage}
     this.apiKey = localStorage.getItem("openai_api_key");
 
     if (this.apiKey && this.apiKey.startsWith("sk-")) {
+      this.updateConnectionStatus("Connected (Ozwell AI)");
       this.addMessage(
         "system",
-        "🔄 OpenAI API key updated! Enhanced AI responses are now enabled."
+        "🔄 Ozwell AI API key updated! Enhanced AI responses are now enabled."
       );
     } else {
+      this.updateConnectionStatus("Connected");
       this.addMessage(
         "system",
         "🔄 Configuration updated. Using built-in medical responses."

@@ -1,7 +1,7 @@
 {
   "name": "medical-ai-chatbot",
   "version": "1.0.0",
-  "description": "Medical AI Chatbot Server",
+  "description": "Medical AI Chatbot Server with Ozwell AI Integration",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {

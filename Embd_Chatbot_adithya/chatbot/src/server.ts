@@ -143,7 +143,7 @@ Be helpful, professional, and focus on medical/healthcare topics. If asked about
     if (!openaiResponse.ok) {
       const errorData: APIError = await openaiResponse.json();
       return res.status(openaiResponse.status).json({
-        error: `OpenAI API Error: ${
+        error: `Ozwell AI API Error: ${
           errorData.error?.message || "Unknown error"
         }`,
       });
@@ -166,7 +166,7 @@ app.get("/api/status", (req: Request, res: Response) => {
       medicalDataManagement: true,
       patientInformation: true,
       medicationManagement: true,
-      openAIIntegration: true,
+      ozwellAIIntegration: true,
       realTimeCommunication: true,
     },
     timestamp: new Date().toISOString(),
@@ -179,7 +179,11 @@ app.get("/api/config", (req: Request, res: Response) => {
   res.json({
     name: "Medical AI Chatbot",
     version: "1.0.0",
-    features: ["MCP Protocol", "OpenAI Integration", "Medical Data Management"],
+    features: [
+      "MCP Protocol",
+      "Ozwell AI Integration",
+      "Medical Data Management",
+    ],
     supportedActions: [
       "patient-info",
       "vital-signs",

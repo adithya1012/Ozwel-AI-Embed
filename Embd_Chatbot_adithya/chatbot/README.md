@@ -1,13 +1,13 @@
 # Medical AI Chatbot
 
-This folder contains a standalone AI-powered chatbot interface designed for medical data management. Built with TypeScript, Express.js, and OpenAI integration for enhanced medical assistance.
+This folder contains a standalone AI-powered chatbot interface designed for medical data management. Built with TypeScript, Express.js, and Ozwell AI integration for enhanced medical assistance.
 
 ## Features
 
 - **Medical Data Management**: Update patient vital signs (blood pressure, blood sugar)
 - **Patient Information**: View current patient data and medical history
 - **Medication Management**: Add and manage patient medications
-- **OpenAI Integration**: Enhanced AI responses when API key is configured
+- **Ozwell AI Integration**: Enhanced AI responses when API key is configured
 - **TypeScript**: Full TypeScript implementation for type safety
 - **Responsive Design**: Modern, mobile-friendly interface
 - **Security**: Helmet.js for security headers, CORS support
@@ -16,7 +16,7 @@ This folder contains a standalone AI-powered chatbot interface designed for medi
 
 ```
 ├── src/
-│   ├── server.ts      # Express server with OpenAI proxy
+│   ├── server.ts      # Express server with Ozwell AI proxy
 │   ├── client.ts      # Frontend chatbot logic
 │   └── types.ts       # TypeScript type definitions
 ├── dist/              # Compiled JavaScript files
@@ -101,7 +101,7 @@ The main HTML file containing:
 - Complete chat interface with modern CSS styling
 - Medical-themed design with gradients and medical icons
 - Quick action buttons for common medical tasks
-- OpenAI configuration panel
+- Ozwell AI configuration panel
 - Responsive layout optimized for medical workflows
 
 ### `client.ts`
@@ -109,7 +109,7 @@ The main HTML file containing:
 The TypeScript client application containing:
 
 - MCP client implementation for communication with parent frames
-- OpenAI integration for intelligent responses
+- Ozwell AI integration for intelligent responses
 - Chat UI management and message handling
 - Tool detection and execution
 - Mock data responses for offline functionality
@@ -130,12 +130,12 @@ The TypeScript client application containing:
 2. The chatbot will attempt to connect to a parent dashboard
 3. Use the quick action buttons or type messages to interact
 
-### With OpenAI Integration
+### With Ozwell AI Integration
 
 1. Click the settings (⚙️) icon in the top right
-2. Enter your OpenAI API key
+2. Enter your Ozwell AI API key
 3. Click "Save" to enable enhanced AI responses
-4. The connection status will show "Connected (OpenAI)"
+4. The connection status will show "Connected (Ozwell AI)"
 
 ### Medical Interactions
 
@@ -167,13 +167,13 @@ To integrate this chatbot into your application:
 
 2. **As a standalone application**:
    - Host the files on a web server
-   - Ensure proper CORS configuration for OpenAI API calls
+   - Ensure proper CORS configuration for Ozwell AI API calls
    - Configure the parent-child communication as needed
 
 ## Dependencies
 
 - **@modelcontextprotocol/sdk**: For MCP client functionality
-- **OpenAI**: For enhanced AI responses (optional)
+- **Ozwell AI**: For enhanced AI responses (optional)
 - **Modern browser**: Supports ES modules and PostMessage API
 
 ## Customization
@@ -200,8 +200,8 @@ Customize the mock responses in `getMockToolResponse()` to match your data struc
 
 ## Security Notes
 
-- OpenAI API keys are stored locally in browser localStorage
-- Keys are never sent to external servers (except OpenAI)
+- Ozwell AI API keys are stored locally in browser localStorage
+- Keys are never sent to external servers (except Ozwell AI)
 - Use HTTPS in production for secure communication
 - Validate all medical data inputs in production systems
 
