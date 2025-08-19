@@ -1,12 +1,18 @@
 {
-  "name": "medical-mcp-postmessage",
+  "name": "ozwell-ai-embed",
   "version": "1.0.0",
-  "description": "Medical MCP Postmessage Application",
+  "description": "Ozwell AI Medical Chatbot Iframe Integration",
+  "main": "src/ozwell-iframe.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vite --open /test/demo/index.html",
+    "validate": "vite --open /test/validation.html",
+    "example": "vite --open /examples/simple-integration.html",
+    "start": "npm run dev"
   },
+  "keywords": ["medical", "ai", "chatbot", "iframe", "embed", "healthcare"],
   "devDependencies": {
     "vite": "^5.0.0"
   },
