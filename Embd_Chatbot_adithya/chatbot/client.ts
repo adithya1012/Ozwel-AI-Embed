@@ -770,55 +770,23 @@ declare global {
     sendMessage: () => void;
     sendQuickMessage: (message: string) => void;
     reconnect: () => void;
-    showConfig: () => void;
-    hideConfig: () => void;
-    saveApiKey: () => void;
+    copilotApp?: {
+      reinitialize: () => void;
+    };
   }
 }
 
-// Configuration panel functions
-window.showConfig = () => {
-  const panel = document.getElementById("config-panel");
-  const input = document.getElementById("api-key-input") as HTMLInputElement;
-  if (panel && input) {
-    // Load current API key if exists
-    const currentKey = localStorage.getItem("openai_api_key");
-    if (currentKey) {
-      input.value = currentKey;
+// Expose copilot app methods globally for config panel
+window.copilotApp = {
+  reinitialize: () => {
+    if (copilotApp) {
+      console.log("[AI-COPILOT] Reinitializing with new API key...");
+      copilotApp.disconnect().then(() => {
+        setTimeout(() => {
+          copilotApp.initialize();
+        }, 1000);
+      });
     }
-    panel.style.display = "flex";
-  }
-};
-
-window.hideConfig = () => {
-  const panel = document.getElementById("config-panel");
-  if (panel) {
-    panel.style.display = "none";
-  }
-};
-
-window.saveApiKey = () => {
-  const input = document.getElementById("api-key-input") as HTMLInputElement;
-  if (input) {
-    const apiKey = input.value.trim();
-    if (apiKey) {
-      localStorage.setItem("openai_api_key", apiKey);
-      console.log("[AI-COPILOT] API key saved to localStorage");
-
-      // Reinitialize the copilot with new API key
-      if (copilotApp) {
-        console.log("[AI-COPILOT] Reconnecting with new API key...");
-        copilotApp.disconnect().then(() => {
-          setTimeout(() => {
-            copilotApp.initialize();
-          }, 1000);
-        });
-      }
-    } else {
-      localStorage.removeItem("openai_api_key");
-      console.log("[AI-COPILOT] API key removed from localStorage");
-    }
-    window.hideConfig();
   }
 };
 
