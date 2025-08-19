@@ -503,6 +503,9 @@
       </div>
     </div>
 
-    <script type="module" src="./client.ts"></script>
+    <script type="module">
+      // Import the client module
+      import("./client.ts").catch(console.error);
+    </script>
   </body>
 </html>

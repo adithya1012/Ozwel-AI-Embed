@@ -12,6 +12,66 @@ This folder contains a standalone AI-powered chatbot interface designed for medi
 - **Responsive Design**: Modern, mobile-friendly interface
 - **Quick Actions**: Pre-configured buttons for common medical tasks
 
+## Quick Start
+
+### Option 1: Using the Startup Script (Recommended)
+
+```bash
+./start.sh
+```
+
+### Option 2: Manual Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start the server
+npm start
+```
+
+### Option 3: Development Mode
+
+```bash
+# Install dependencies
+npm install
+
+# Start in development mode with auto-reload
+npm run dev
+```
+
+## Server Access
+
+Once the server is running, you can access the chatbot at:
+
+- **Local**: http://localhost:3000
+- **Network**: http://0.0.0.0:3000 (accessible from other devices on your network)
+
+## API Endpoints
+
+- `GET /health` - Health check endpoint
+- `GET /api/status` - Service status and features
+- `GET /api/config` - Configuration information
+
+## Docker Support
+
+```bash
+# Build Docker image
+docker build -t medical-chatbot .
+
+# Run container
+docker run -p 3000:3000 medical-chatbot
+```
+
+## Environment Configuration
+
+Create a `.env` file (copy from `.env.example`):
+
+```bash
+PORT=3000
+NODE_ENV=development
+```
+
 ## Files
 
 ### `index.html`
@@ -37,7 +97,14 @@ The TypeScript client application containing:
 
 ## Usage
 
-### Basic Setup
+### Server Mode (Recommended)
+
+1. **Install dependencies**: `npm install`
+2. **Start the server**: `npm start` or `./start.sh`
+3. **Access the chatbot**: Open http://localhost:3000 in your browser
+4. The chatbot will automatically connect and be ready to use
+
+### Basic Setup (Legacy)
 
 1. Open `index.html` in a web browser
 2. The chatbot will attempt to connect to a parent dashboard
