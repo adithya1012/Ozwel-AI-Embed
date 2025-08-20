@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ozwell AI Chatbot - Iframe Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .iframe-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            min-height: 600px;
+            position: relative;
+        }
+
+        .chatbot-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e3e3e3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .server-instructions {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            color: white;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .server-instructions h3 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .server-instructions code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        .responsive-note {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .iframe-container {
+                height: 70vh;
+                min-height: 500px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏥 Ozwell AI Medical Chatbot</h1>
+        <p>Embedded Medical AI Assistant for Healthcare Professionals</p>
+    </div>
+
+    <div class="iframe-container">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <p>Loading Medical AI Assistant...</p>
+        </div>
+        <iframe 
+            class="chatbot-iframe" 
+            id="chatbotIframe"
+            src="http://localhost:5173/src/components/index.html"
+            title="Ozwell AI Medical Chatbot"
+            onload="hideLoading()"
+            onerror="showError()">
+        </iframe>
+    </div>
+
+    <div class="responsive-note">
+        📱 This iframe is responsive and will work on both desktop and mobile devices
+    </div>
+
+    <script>
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        function showError() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.innerHTML = `
+                    <div style="text-align: center;">
+                        <h3 style="color: #ff6b6b; margin-bottom: 15px;">⚠️ Connection Error</h3>
+                        <p>Could not load the chatbot. Please ensure:</p>
+                        <ul style="text-align: left; margin: 15px 0;">
+                            <li>The development server is running (<code>npm run dev</code>)</li>
+                            <li>The server is accessible at <code>http://localhost:5173</code></li>
+                            <li>The chatbot component exists at the specified path</li>
+                        </ul>
+                        <button onclick="reloadIframe()" style="
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            margin-top: 10px;
+                        ">🔄 Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function reloadIframe() {
+            const iframe = document.getElementById('chatbotIframe');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            loadingOverlay.innerHTML = `
+                <div class="loading-spinner"></div>
+                <p>Loading Medical AI Assistant...</p>
+            `;
+            
+            iframe.src = iframe.src; // Reload the iframe
+        }
+
+        // Optional: Check if the server is running
+        function checkServerStatus() {
+            fetch('http://localhost:5173')
+                .then(response => {
+                    if (!response.ok) {
+                        showError();
+                    }
+                })
+                .catch(() => {
+                    showError();
+                });
+        }
+
+        // Check server status after a brief delay
+        setTimeout(checkServerStatus, 2000);
+    </script>
+</body>
+</html>
