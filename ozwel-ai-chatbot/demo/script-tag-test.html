@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Script Tag Integration Test - Ozwel AI Chatbot</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+
+      .test-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #6c5ce7;
+      }
+
+      .test-section {
+        margin-bottom: 30px;
+      }
+
+      .code-block {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        padding: 15px;
+        font-family: "Monaco", "Consolas", monospace;
+        font-size: 14px;
+        overflow-x: auto;
+        margin: 10px 0;
+      }
+
+      .status-box {
+        background: #e8f4f8;
+        border: 1px solid #bee5eb;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .success {
+        background: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+
+      .error {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+
+      .btn {
+        background: #6c5ce7;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        background: #5a4fcf;
+      }
+
+      .chatbot-container {
+        border: 2px dashed #6c5ce7;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        min-height: 100px;
+        text-align: center;
+        background: #f8f9ff;
+      }
+
+      .integration-note {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        color: #856404;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <div class="test-header">
+        <h1>🧪 Script Tag Integration Test</h1>
+        <p>Testing Ozwel AI Chatbot integration via script tag method</p>
+      </div>
+
+      <div class="test-section">
+        <h2>📋 Test Checklist</h2>
+        <div id="test-status">
+          <div class="status-box">⏳ Initializing tests...</div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>📝 Integration Code</h2>
+        <p>This page tests the following integration code:</p>
+
+        <div class="code-block">
+          &lt;!-- Include the chatbot script --&gt; &lt;script
+          src="http://localhost:4173/src/main.ts"
+          type="module"&gt;&lt;/script&gt; &lt;!-- Test initialization --&gt;
+          &lt;script&gt; document.addEventListener('DOMContentLoaded',
+          function() { // Test if OzwelAI is available setTimeout(() =&gt; { if
+          (window.OzwelAI) { console.log('✅ OzwelAI is available'); //
+          Initialize the chatbot window.OzwelAI.init(); } else {
+          console.error('❌ OzwelAI not found'); } }, 1000); }); &lt;/script&gt;
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>🎯 Integration Test Results</h2>
+
+        <div class="integration-note">
+          <strong>⚠️ Note:</strong> For this test to work, the main Ozwel AI
+          Chatbot must be running on port 4173. Run
+          <code>npm run preview</code> in the chatbot directory first.
+        </div>
+
+        <div class="chatbot-container" id="chatbot-container">
+          <p>📦 Chatbot will load here via script tag...</p>
+          <p>
+            <small
+              >If you see the chatbot interface below, the integration is
+              working!</small
+            >
+          </p>
+        </div>
+
+        <div class="test-section">
+          <h3>🔍 Debug Information</h3>
+          <button class="btn" onclick="runDiagnostics()">
+            Run Diagnostics
+          </button>
+          <button class="btn" onclick="testAPIConnection()">
+            Test API Connection
+          </button>
+          <button class="btn" onclick="clearCache()">Clear Cache</button>
+
+          <div id="debug-output" style="margin-top: 15px"></div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>🚀 Manual Integration Steps</h2>
+        <ol>
+          <li>
+            <strong>Start the Ozwel AI Chatbot server:</strong>
+            <div class="code-block">cd ozwel-ai-chatbot npm run preview</div>
+          </li>
+          <li>
+            <strong>Include the script in your HTML:</strong>
+            <div class="code-block">
+              &lt;script src="http://localhost:4173/assets/main-[hash].js"
+              type="module"&gt;&lt;/script&gt;
+            </div>
+          </li>
+          <li>
+            <strong>Initialize the chatbot:</strong>
+            <div class="code-block">
+              &lt;script&gt; window.addEventListener('load', function() { if
+              (window.OzwelAI) { window.OzwelAI.init(); } }); &lt;/script&gt;
+            </div>
+          </li>
+          <li>
+            <strong>Add a container for the chatbot (optional):</strong>
+            <div class="code-block">
+              &lt;div id="ozwel-ai-chatbot"&gt;&lt;/div&gt;
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- This is the actual integration test -->
+    <!-- Note: This will only work if the chatbot is built and served -->
+    <script>
+      // Test status tracking
+      let testResults = {
+        scriptLoaded: false,
+        ozwelAIAvailable: false,
+        chatbotInitialized: false,
+        apiConnectable: false,
+      };
+
+      function updateTestStatus() {
+        const statusDiv = document.getElementById("test-status");
+        let html = "";
+
+        Object.entries(testResults).forEach(([test, passed]) => {
+          const icon = passed ? "✅" : "❌";
+          const status = passed ? "PASS" : "FAIL";
+          html += `<div class="status-box ${passed ? "success" : "error"}">
+                    ${icon} ${test
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase())}: ${status}
+                </div>`;
+        });
+
+        statusDiv.innerHTML = html;
+      }
+
+      function runDiagnostics() {
+        const debugOutput = document.getElementById("debug-output");
+        let diagnostics = [];
+
+        // Check if OzwelAI is available
+        if (window.OzwelAI) {
+          diagnostics.push("✅ window.OzwelAI is available");
+          diagnostics.push(
+            `📦 Version: ${window.OzwelAI.version || "unknown"}`
+          );
+
+          if (window.OzwelAI.chatbot) {
+            diagnostics.push("✅ Chatbot instance exists");
+            diagnostics.push(
+              `🔗 Connected: ${window.OzwelAI.chatbot.isConnected || false}`
+            );
+          } else {
+            diagnostics.push("❌ Chatbot instance not found");
+          }
+        } else {
+          diagnostics.push("❌ window.OzwelAI is not available");
+        }
+
+        // Check DOM elements
+        const chatInput = document.getElementById("chat-input");
+        const chatMessages = document.getElementById("chat-messages");
+
+        diagnostics.push(
+          chatInput ? "✅ Chat input found" : "❌ Chat input not found"
+        );
+        diagnostics.push(
+          chatMessages
+            ? "✅ Chat messages container found"
+            : "❌ Chat messages container not found"
+        );
+
+        // Check localStorage
+        const apiKey = localStorage.getItem("openai_api_key");
+        diagnostics.push(
+          apiKey ? "✅ API key configured" : "⚠️ No API key configured"
+        );
+
+        debugOutput.innerHTML = `
+                <div class="code-block">
+                    <strong>Diagnostic Results:</strong><br>
+                    ${diagnostics.join("<br>")}
+                </div>
+            `;
+      }
+
+      async function testAPIConnection() {
+        const debugOutput = document.getElementById("debug-output");
+
+        try {
+          const response = await fetch("http://localhost:4173/api/status");
+          const data = await response.json();
+
+          testResults.apiConnectable = true;
+          updateTestStatus();
+
+          debugOutput.innerHTML = `
+                    <div class="code-block">
+                        <strong>API Connection Test:</strong><br>
+                        ✅ Successfully connected to API<br>
+                        Service: ${data.service}<br>
+                        Status: ${data.status}<br>
+                        Features: ${Object.keys(data.features || {}).length}
+                    </div>
+                `;
+        } catch (error) {
+          debugOutput.innerHTML = `
+                    <div class="code-block" style="color: #e74c3c;">
+                        <strong>API Connection Test:</strong><br>
+                        ❌ Failed to connect to API<br>
+                        Error: ${error.message}<br>
+                        Make sure the chatbot server is running on port 4173
+                    </div>
+                `;
+        }
+      }
+
+      function clearCache() {
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload();
+      }
+
+      // Initialize tests
+      document.addEventListener("DOMContentLoaded", function () {
+        updateTestStatus();
+
+        // Test if script loads and OzwelAI becomes available
+        setTimeout(() => {
+          if (window.OzwelAI) {
+            testResults.ozwelAIAvailable = true;
+            updateTestStatus();
+
+            // Try to initialize
+            try {
+              window.OzwelAI.init();
+              testResults.chatbotInitialized = true;
+              updateTestStatus();
+            } catch (error) {
+              console.error("Failed to initialize chatbot:", error);
+            }
+          }
+          runDiagnostics();
+        }, 2000);
+      });
+
+      // Try to load the chatbot script
+      // Note: This would normally be the built/bundled script
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = "http://localhost:4173/src/main.ts";
+      script.onload = () => {
+        testResults.scriptLoaded = true;
+        updateTestStatus();
+      };
+      script.onerror = () => {
+        console.error("Failed to load chatbot script");
+        updateTestStatus();
+      };
+
+      // Only try to load if we're testing locally
+      if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      ) {
+        document.head.appendChild(script);
+      } else {
+        document.getElementById("debug-output").innerHTML = `
+                <div class="code-block" style="color: #856404;">
+                    <strong>⚠️ Note:</strong> Script loading test skipped - not running on localhost.<br>
+                    This test requires the chatbot to be running locally on port 4173.
+                </div>
+            `;
+      }
+    </script>
+  </body>
+</html>
