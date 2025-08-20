@@ -22,17 +22,20 @@ An embeddable medical AI assistant designed for patient data management and heal
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-org/ozwel-ai-embed.git
    cd ozwel-ai-embed/ozwel-ai-chatbot
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -68,12 +71,13 @@ The built files will be in the `dist/` directory. Deploy these files to your web
 Perfect for quick integration with complete isolation:
 
 ```html
-<iframe 
-    src="https://your-domain.com/ozwel-ai-chatbot"
-    width="400" 
-    height="600"
-    title="Ozwel AI Assistant"
-    style="border: none; border-radius: 10px;">
+<iframe
+  src="https://your-domain.com/ozwel-ai-chatbot"
+  width="400"
+  height="600"
+  title="Ozwel AI Assistant"
+  style="border: none; border-radius: 10px;"
+>
 </iframe>
 ```
 
@@ -87,11 +91,11 @@ For native integration with custom styling:
 
 <!-- Initialize the chatbot -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.OzwelAI) {
-            window.OzwelAI.init();
-        }
-    });
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.OzwelAI) {
+      window.OzwelAI.init();
+    }
+  });
 </script>
 ```
 
@@ -104,7 +108,7 @@ npm install ozwel-ai-chatbot
 ```
 
 ```typescript
-import { OzwelAIChatbot } from 'ozwel-ai-chatbot';
+import { OzwelAIChatbot } from "ozwel-ai-chatbot";
 
 const chatbot = new OzwelAIChatbot();
 chatbot.initialize();
@@ -115,6 +119,7 @@ chatbot.initialize();
 ### Demo Pages
 
 1. **Interactive Demo**
+
    ```bash
    npm run preview
    # Visit http://localhost:4173/demo/
@@ -187,12 +192,12 @@ Users can configure the chatbot through the settings panel (⚙️ icon):
 
 When running with the server component:
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check and server status |
-| `/api/status` | GET | Service status and features |
-| `/api/config` | GET | Configuration information |
-| `/api/openai/chat` | POST | OpenAI API proxy endpoint |
+| Endpoint           | Method | Description                    |
+| ------------------ | ------ | ------------------------------ |
+| `/health`          | GET    | Health check and server status |
+| `/api/status`      | GET    | Service status and features    |
+| `/api/config`      | GET    | Configuration information      |
+| `/api/openai/chat` | POST   | OpenAI API proxy endpoint      |
 
 ## 🏗️ Development
 
@@ -265,11 +270,13 @@ npm run format
 ### Common Issues
 
 1. **Chatbot not loading**
+
    - Check browser console for errors
    - Verify the script src URL is correct
    - Ensure CORS headers allow your domain
 
 2. **API errors**
+
    - Verify OpenAI API key is valid
    - Check network connectivity
    - Review server logs for errors
@@ -284,7 +291,7 @@ npm run format
 Enable debug logging:
 
 ```javascript
-localStorage.setItem('ozwel-debug', 'true');
+localStorage.setItem("ozwel-debug", "true");
 ```
 
 ## 📄 License

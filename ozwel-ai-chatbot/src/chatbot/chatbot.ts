@@ -283,7 +283,7 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
     try {
       // First check if server is available
       const serverAvailable = await this.checkServerAvailability();
-      
+
       if (!serverAvailable) {
         console.log("[OZWEL-AI] Server not available, calling OpenAI directly");
         return await this.callOpenAIDirectly(message, apiKey);
@@ -311,7 +311,9 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
       try {
         data = await response.json();
       } catch (jsonError) {
-        console.log("[OZWEL-AI] Failed to parse server response, trying direct call");
+        console.log(
+          "[OZWEL-AI] Failed to parse server response, trying direct call"
+        );
         return await this.callOpenAIDirectly(message, apiKey);
       }
 
@@ -382,12 +384,12 @@ Error: ${errorMessage}
       // Create a timeout controller
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-      
-      const response = await fetch('/health', { 
-        method: 'GET',
-        signal: controller.signal
+
+      const response = await fetch("/health", {
+        method: "GET",
+        signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
       return response.ok;
     } catch (error) {
@@ -396,11 +398,16 @@ Error: ${errorMessage}
     }
   }
 
-  private async callOpenAIDirectly(message: string, apiKey: string): Promise<string> {
+  private async callOpenAIDirectly(
+    message: string,
+    apiKey: string
+  ): Promise<string> {
     // Note: Direct OpenAI calls from browser will fail due to CORS
     // This is here as a fallback but will likely throw an error
-    console.warn("[OZWEL-AI] Attempting direct OpenAI call - this may fail due to CORS restrictions");
-    
+    console.warn(
+      "[OZWEL-AI] Attempting direct OpenAI call - this may fail due to CORS restrictions"
+    );
+
     const openaiRequest = {
       model: "gpt-3.5-turbo",
       messages: [
@@ -428,14 +435,17 @@ Be helpful, professional, and focus on medical/healthcare topics. If asked about
     };
 
     try {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(openaiRequest),
-      });
+      const response = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(openaiRequest),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -447,7 +457,7 @@ Be helpful, professional, and focus on medical/healthcare topics. If asked about
       }
 
       const data: OpenAIResponse = await response.json();
-      
+
       if (data.choices && data.choices.length > 0) {
         return `🤖 **AI Assistant Response:**
 
@@ -460,8 +470,13 @@ ${data.choices[0].message.content}
       }
     } catch (error) {
       // CORS or other network error - this is expected when calling from browser
-      console.log("[OZWEL-AI] Direct OpenAI call failed (expected due to CORS):", error);
-      throw new Error("Server unavailable and direct OpenAI calls are blocked by CORS. Please start the server component or use the built-in responses.");
+      console.log(
+        "[OZWEL-AI] Direct OpenAI call failed (expected due to CORS):",
+        error
+      );
+      throw new Error(
+        "Server unavailable and direct OpenAI calls are blocked by CORS. Please start the server component or use the built-in responses."
+      );
     }
   }
 

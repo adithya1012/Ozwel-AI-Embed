@@ -23,12 +23,14 @@ This repository provides a production-ready, embeddable AI chatbot specifically 
 ### For End Users (Integration)
 
 1. **Iframe Integration** (Recommended for quick setup):
+
    ```html
-   <iframe 
-       src="https://your-domain.com/ozwel-ai-chatbot"
-       width="400" 
-       height="600"
-       title="Ozwel AI Assistant">
+   <iframe
+     src="https://your-domain.com/ozwel-ai-chatbot"
+     width="400"
+     height="600"
+     title="Ozwel AI Assistant"
+   >
    </iframe>
    ```
 
@@ -36,9 +38,9 @@ This repository provides a production-ready, embeddable AI chatbot specifically 
    ```html
    <script src="https://your-domain.com/ozwel-ai-chatbot.js"></script>
    <script>
-       document.addEventListener('DOMContentLoaded', () => {
-           if (window.OzwelAI) window.OzwelAI.init();
-       });
+     document.addEventListener("DOMContentLoaded", () => {
+       if (window.OzwelAI) window.OzwelAI.init();
+     });
    </script>
    ```
 
@@ -87,6 +89,7 @@ npm run preview
 ```
 
 The demo includes:
+
 - **Interactive Chatbot Demo**: Full chatbot functionality with sample patient data
 - **Integration Examples**: Code samples for different integration methods
 - **API Testing**: Built-in tools to test API endpoints and connectivity
@@ -102,21 +105,23 @@ npm run preview
 
 ## 🔧 Integration Options
 
-| Method | Best For | Pros | Cons |
-|--------|----------|------|------|
-| **Iframe** | Quick deployment, isolated styling | Easy setup, no conflicts | Limited customization |
-| **Script Tag** | Custom styling, native integration | Full control, lightweight | Requires more setup |
-| **NPM Package** | Modern build tools, TypeScript | Type safety, tree shaking | Build process required |
+| Method          | Best For                           | Pros                      | Cons                   |
+| --------------- | ---------------------------------- | ------------------------- | ---------------------- |
+| **Iframe**      | Quick deployment, isolated styling | Easy setup, no conflicts  | Limited customization  |
+| **Script Tag**  | Custom styling, native integration | Full control, lightweight | Requires more setup    |
+| **NPM Package** | Modern build tools, TypeScript     | Type safety, tree shaking | Build process required |
 
 ## 📋 Use Cases
 
 ### Healthcare Applications
+
 - **EMR Integration**: Embed in electronic medical record systems
 - **Patient Portals**: Add AI assistance to patient-facing applications
 - **Telemedicine**: Enhance virtual consultation platforms
 - **Clinical Workflows**: Streamline data entry and patient management
 
 ### Technical Integration
+
 - **Hospital Information Systems**: Native integration with HIS platforms
 - **Mobile Health Apps**: Responsive design for mobile applications
 - **Web Applications**: Easy embedding in existing web platforms
@@ -127,12 +132,14 @@ npm run preview
 ### Contributing to the Project
 
 1. **Fork & Clone**
+
    ```bash
    git fork https://github.com/your-org/ozwel-ai-embed.git
    git clone https://github.com/your-username/ozwel-ai-embed.git
    ```
 
 2. **Setup Development Environment**
+
    ```bash
    cd ozwel-ai-embed/ozwel-ai-chatbot
    npm install
@@ -140,11 +147,12 @@ npm run preview
    ```
 
 3. **Make Changes & Test**
+
    ```bash
    # Test your changes
    npm run build
    npm run preview
-   
+
    # Run integration tests
    npm run test:integration
    ```
@@ -198,18 +206,21 @@ We welcome contributions! Please see our contributing guidelines:
 ## 📈 Roadmap
 
 ### Current Version (v1.0)
+
 - ✅ Basic chatbot functionality
 - ✅ OpenAI integration
 - ✅ Multiple integration methods
 - ✅ Demo and testing pages
 
 ### Planned Features (v1.1)
+
 - 🔄 NPM package distribution
 - 🔄 Advanced theming system
 - 🔄 Plugin architecture
 - 🔄 Real-time collaboration features
 
 ### Future Enhancements (v2.0)
+
 - 🔮 Voice interaction capabilities
 - 🔮 Multi-language support
 - 🔮 Advanced analytics and reporting
