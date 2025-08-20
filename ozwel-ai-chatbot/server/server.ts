@@ -11,7 +11,7 @@ import type {
   OpenAIRequest,
   OpenAIResponse,
   APIError,
-} from "./types.js";
+} from "../src/chatbot/types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,7 +54,7 @@ app.use(
     origin:
       config.nodeEnv === "production"
         ? ["https://your-domain.com"] // Replace with your production domain
-        : ["http://localhost:3000", "http://127.0.0.1:3000"],
+        : true, // Allow all origins in development
     credentials: true,
   })
 );
@@ -66,15 +66,13 @@ app.use(morgan("combined"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Serve static files from parent directory (where index.html is located)
+// Serve static files from dist directory
 app.use(
-  express.static(join(__dirname, ".."), {
+  express.static(join(__dirname, "..", "dist"), {
     index: "index.html",
     setHeaders: (res: Response, path: string) => {
       // Set proper MIME types
-      if (path.endsWith(".ts")) {
-        res.setHeader("Content-Type", "application/javascript");
-      } else if (path.endsWith(".js")) {
+      if (path.endsWith(".js")) {
         res.setHeader("Content-Type", "application/javascript");
       }
     },
@@ -143,7 +141,7 @@ Be helpful, professional, and focus on medical/healthcare topics. If asked about
     if (!openaiResponse.ok) {
       const errorData: APIError = await openaiResponse.json();
       return res.status(openaiResponse.status).json({
-        error: `Ozwell AI API Error: ${
+        error: `Ozwel AI API Error: ${
           errorData.error?.message || "Unknown error"
         }`,
       });
@@ -160,13 +158,13 @@ Be helpful, professional, and focus on medical/healthcare topics. If asked about
 // API endpoint for chatbot status
 app.get("/api/status", (req: Request, res: Response) => {
   const statusResponse: ServiceStatusResponse = {
-    service: "Medical AI Chatbot",
+    service: "Ozwel AI Chatbot",
     status: "running",
     features: {
       medicalDataManagement: true,
       patientInformation: true,
       medicationManagement: true,
-      ozwellAIIntegration: true,
+      ozwelAIIntegration: true,
       realTimeCommunication: true,
     },
     timestamp: new Date().toISOString(),
@@ -177,12 +175,12 @@ app.get("/api/status", (req: Request, res: Response) => {
 // API endpoint for configuration
 app.get("/api/config", (req: Request, res: Response) => {
   res.json({
-    name: "Medical AI Chatbot",
+    name: "Ozwel AI Chatbot",
     version: "1.0.0",
     features: [
-      "MCP Protocol",
-      "Ozwell AI Integration",
-      "Medical Data Management",
+      "Medical AI Integration",
+      "Patient Data Management",
+      "Embeddable Widget",
     ],
     supportedActions: [
       "patient-info",
@@ -196,7 +194,7 @@ app.get("/api/config", (req: Request, res: Response) => {
 
 // Catch-all handler: send back index.html file for SPA routing
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(join(__dirname, "..", "index.html"));
+  res.sendFile(join(__dirname, "..", "dist", "index.html"));
 });
 
 // Error handling middleware
@@ -233,7 +231,7 @@ process.on("SIGINT", () => {
 });
 
 const server = app.listen(config.port, () => {
-  console.log("🏥 Medical AI Chatbot Server Starting...");
+  console.log("🏥 Ozwel AI Chatbot Server Starting...");
   console.log("=====================================");
   console.log(`🚀 Server running on port ${config.port}`);
   console.log(`📱 Local access: http://localhost:${config.port}`);
