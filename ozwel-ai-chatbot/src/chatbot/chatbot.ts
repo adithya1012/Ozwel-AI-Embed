@@ -1,18 +1,18 @@
 /**
- * Medical AI Chatbot - Client Application
- * TypeScript version with proper type definitions
+ * Ozwel AI Chatbot - Core Implementation
+ * TypeScript implementation with clean architecture
  */
 
 import type {
   ChatMessage,
   OpenAIResponse,
-  SimpleChatbot as IChatbot,
-} from "./types.js";
+  OzwelAIChatbot as IOzwelAIChatbot,
+} from "./types";
 
-console.log("[AI-COPILOT] Starting Medical AI Chatbot...");
+console.log("[OZWEL-AI] Loading Medical AI Chatbot...");
 
 // Medical AI Chatbot implementation
-class SimpleChatbot implements IChatbot {
+export class OzwelAIChatbot implements IOzwelAIChatbot {
   public messages: ChatMessage[] = [];
   public isConnected: boolean = false;
   public apiKey: string | null = null;
@@ -23,13 +23,13 @@ class SimpleChatbot implements IChatbot {
   }
 
   public initialize(): void {
-    console.log("[AI-COPILOT] Initializing chatbot...");
+    console.log("[OZWEL-AI] Initializing chatbot...");
     this.setupUI();
     this.showWelcome();
 
     // Check if we have an API key and update status accordingly
     if (this.apiKey && this.apiKey.startsWith("sk-")) {
-      this.updateConnectionStatus("Connected (Ozwell AI)");
+      this.updateConnectionStatus("Connected (Ozwel AI)");
     } else {
       this.updateConnectionStatus("Connected");
     }
@@ -64,6 +64,32 @@ class SimpleChatbot implements IChatbot {
     if (quickActions) {
       quickActions.style.display = "flex";
     }
+
+    // Setup global event handlers
+    this.setupGlobalHandlers();
+  }
+
+  private setupGlobalHandlers(): void {
+    // Global functions for HTML event handlers
+    window.sendMessage = (): void => {
+      this.sendMessage();
+    };
+
+    window.sendQuickMessage = (message: string): void => {
+      this.sendMessage(message);
+    };
+
+    window.reconnect = (): void => {
+      this.reconnect();
+    };
+
+    // Expose chatbot for config panel
+    window.chatbot = this;
+    window.copilotApp = {
+      reinitialize: (): void => {
+        this.reinitialize();
+      },
+    };
   }
 
   public showWelcome(): void {
@@ -110,7 +136,7 @@ class SimpleChatbot implements IChatbot {
       const response = await this.generateResponse(messageText);
       this.addMessage("assistant", response);
     } catch (error) {
-      console.error("[AI-COPILOT] Error generating response:", error);
+      console.error("[OZWEL-AI] Error generating response:", error);
       this.addMessage(
         "error",
         "Sorry, I encountered an error processing your request."
@@ -126,11 +152,11 @@ class SimpleChatbot implements IChatbot {
     // If we have an API key, try to use OpenAI first for all messages
     if (this.apiKey && this.apiKey.startsWith("sk-")) {
       try {
-        console.log("[AI-COPILOT] Using OpenAI API for response...");
+        console.log("[OZWEL-AI] Using OpenAI API for response...");
         return await this.getOpenAIResponse(message);
       } catch (error) {
         console.log(
-          "[AI-COPILOT] OpenAI request failed, using fallback response"
+          "[OZWEL-AI] OpenAI request failed, using fallback response"
         );
         // Fall through to rule-based responses
       }
@@ -243,7 +269,7 @@ All vital signs are within normal ranges. Last updated: ${new Date().toLocaleStr
 
 Try asking me "Show patient info" or "Update blood pressure to 120/80"
 
-💡 *To enable enhanced AI responses, click the ⚙️ settings icon and add your Ozwell AI API key.*`;
+💡 *To enable enhanced AI responses, click the ⚙️ settings icon and add your Ozwel AI API key.*`;
   }
 
   public async getOpenAIResponse(message: string): Promise<string> {
@@ -255,6 +281,14 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
     }
 
     try {
+      // First check if server is available
+      const serverAvailable = await this.checkServerAvailability();
+      
+      if (!serverAvailable) {
+        console.log("[OZWEL-AI] Server not available, calling OpenAI directly");
+        return await this.callOpenAIDirectly(message, apiKey);
+      }
+
       const response = await fetch("/api/openai/chat", {
         method: "POST",
         headers: {
@@ -267,15 +301,19 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          `API Error: ${response.status} - ${
-            errorData.error || "Unknown error"
-          }`
-        );
+        // If server proxy fails, try direct call as fallback
+        console.log("[OZWEL-AI] Server proxy failed, trying direct call");
+        return await this.callOpenAIDirectly(message, apiKey);
       }
 
-      const data: OpenAIResponse = await response.json();
+      // Handle potential JSON parsing errors
+      let data: OpenAIResponse;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.log("[OZWEL-AI] Failed to parse server response, trying direct call");
+        return await this.callOpenAIDirectly(message, apiKey);
+      }
 
       if (data.choices && data.choices.length > 0) {
         return `🤖 **AI Assistant Response:**
@@ -283,12 +321,12 @@ Try asking me "Show patient info" or "Update blood pressure to 120/80"
 ${data.choices[0].message.content}
 
 ---
-*Powered by Ozwell AI*`;
+*Powered by Ozwel AI*`;
       } else {
         throw new Error("No response from OpenAI");
       }
     } catch (error) {
-      console.error("[AI-COPILOT] OpenAI API Error:", error);
+      console.error("[OZWEL-AI] OpenAI API Error:", error);
 
       // Handle specific error types
       const errorMessage =
@@ -297,25 +335,37 @@ ${data.choices[0].message.content}
       if (errorMessage.includes("401")) {
         return `❌ **Authentication Error**
 
-Your Ozwell AI API key appears to be invalid. Please check your API key in the settings (⚙️) and make sure it's correct.
+Your Ozwel AI API key appears to be invalid. Please check your API key in the settings (⚙️) and make sure it's correct.
 
 Error: ${errorMessage}`;
       } else if (errorMessage.includes("429")) {
         return `⚠️ **Rate Limit Exceeded**
 
-You've exceeded your Ozwell AI API rate limit. Please wait a moment before trying again.
+You've exceeded your Ozwel AI API rate limit. Please wait a moment before trying again.
 
 Error: ${errorMessage}`;
       } else if (errorMessage.includes("quota")) {
         return `💳 **Quota Exceeded**
 
-Your Ozwell AI API quota has been exceeded. Please check your Ozwell AI account billing.
+Your Ozwel AI API quota has been exceeded. Please check your Ozwel AI account billing.
+
+Error: ${errorMessage}`;
+      } else if (errorMessage.includes("Server unavailable")) {
+        return `🔧 **Server Configuration Required**
+
+To use enhanced AI responses, you need to start the server component:
+
+\`\`\`bash
+npm run server:dev
+\`\`\`
+
+Or deploy the chatbot with server capabilities. Until then, I'll use my built-in medical knowledge to help you.
 
 Error: ${errorMessage}`;
       } else {
         return `🔧 **API Connection Error**
 
-Unable to connect to Ozwell AI API. This could be due to:
+Unable to connect to Ozwel AI API. This could be due to:
 - Network connectivity issues
 - API service issues
 - Server configuration problems
@@ -324,6 +374,94 @@ Error: ${errorMessage}
 
 *Falling back to built-in responses...*`;
       }
+    }
+  }
+
+  private async checkServerAvailability(): Promise<boolean> {
+    try {
+      // Create a timeout controller
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+      
+      const response = await fetch('/health', { 
+        method: 'GET',
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      return response.ok;
+    } catch (error) {
+      console.log("[OZWEL-AI] Server health check failed:", error);
+      return false;
+    }
+  }
+
+  private async callOpenAIDirectly(message: string, apiKey: string): Promise<string> {
+    // Note: Direct OpenAI calls from browser will fail due to CORS
+    // This is here as a fallback but will likely throw an error
+    console.warn("[OZWEL-AI] Attempting direct OpenAI call - this may fail due to CORS restrictions");
+    
+    const openaiRequest = {
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system" as const,
+          content: `You are a Medical AI Assistant specializing in patient data management and medical information. You help healthcare professionals with:
+- Patient information management
+- Vital signs tracking and updates
+- Medication management
+- Medical record keeping
+- Healthcare data analysis
+
+Current patient context: John Doe (ID: P001), 45 years old, Blood Type O+, Allergies: Penicillin
+Current vitals: BP 120/80, HR 72, Temp 98.6°F, Blood Sugar 95 mg/dL
+
+Be helpful, professional, and focus on medical/healthcare topics. If asked about non-medical topics, politely redirect to medical assistance.`,
+        },
+        {
+          role: "user" as const,
+          content: message,
+        },
+      ],
+      max_tokens: 500,
+      temperature: 0.7,
+    };
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(openaiRequest),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `OpenAI API Error: ${response.status} - ${
+            errorData.error?.message || "Unknown error"
+          }`
+        );
+      }
+
+      const data: OpenAIResponse = await response.json();
+      
+      if (data.choices && data.choices.length > 0) {
+        return `🤖 **AI Assistant Response:**
+
+${data.choices[0].message.content}
+
+---
+*Powered by Ozwel AI (Direct Connection)*`;
+      } else {
+        throw new Error("No response from OpenAI");
+      }
+    } catch (error) {
+      // CORS or other network error - this is expected when calling from browser
+      console.log("[OZWEL-AI] Direct OpenAI call failed (expected due to CORS):", error);
+      throw new Error("Server unavailable and direct OpenAI calls are blocked by CORS. Please start the server component or use the built-in responses.");
     }
   }
 
@@ -370,14 +508,14 @@ Error: ${errorMessage}
   }
 
   public reinitialize(): void {
-    console.log("[AI-COPILOT] Reinitializing with new API key...");
+    console.log("[OZWEL-AI] Reinitializing with new API key...");
     this.apiKey = localStorage.getItem("openai_api_key");
 
     if (this.apiKey && this.apiKey.startsWith("sk-")) {
-      this.updateConnectionStatus("Connected (Ozwell AI)");
+      this.updateConnectionStatus("Connected (Ozwel AI)");
       this.addMessage(
         "system",
-        "🔄 Ozwell AI API key updated! Enhanced AI responses are now enabled."
+        "🔄 Ozwel AI API key updated! Enhanced AI responses are now enabled."
       );
     } else {
       this.updateConnectionStatus("Connected");
@@ -389,38 +527,4 @@ Error: ${errorMessage}
   }
 }
 
-// Global functions for HTML event handlers
-window.sendMessage = (): void => {
-  if (window.chatbot) {
-    window.chatbot.sendMessage();
-  }
-};
-
-window.sendQuickMessage = (message: string): void => {
-  if (window.chatbot) {
-    window.chatbot.sendMessage(message);
-  }
-};
-
-window.reconnect = (): void => {
-  if (window.chatbot) {
-    window.chatbot.reconnect();
-  }
-};
-
-// Expose chatbot for config panel
-window.copilotApp = {
-  reinitialize: (): void => {
-    if (window.chatbot) {
-      window.chatbot.reinitialize();
-    }
-  },
-};
-
-// Initialize chatbot when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("[AI-COPILOT] DOM loaded, initializing chatbot...");
-  window.chatbot = new SimpleChatbot();
-});
-
-console.log("[AI-COPILOT] Client script loaded successfully");
+console.log("[OZWEL-AI] Chatbot class loaded successfully");

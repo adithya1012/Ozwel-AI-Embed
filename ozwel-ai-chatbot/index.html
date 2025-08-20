@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Copilot - Inner Frame MCP Client</title>
+    <title>Ozwel AI Chatbot - Medical Assistant</title>
     <style>
       body {
         margin: 0;
@@ -30,6 +30,7 @@
         align-items: center;
         gap: 0.75rem;
         box-shadow: 0 2px 8px rgba(108, 92, 231, 0.2);
+        position: relative;
       }
 
       .copilot-icon {
@@ -62,6 +63,23 @@
         font-size: 0.75rem;
         font-weight: 500;
         background: rgba(255, 255, 255, 0.2);
+      }
+
+      .settings-icon {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      .settings-icon:hover {
+        background: rgba(255, 255, 255, 0.3);
       }
 
       .chat-messages {
@@ -164,6 +182,68 @@
         }
       }
 
+      .welcome-message {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #636e72;
+      }
+
+      .welcome-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .connection-error {
+        background: #ffe6e6;
+        border: 1px solid #ffcccc;
+        color: #e74c3c;
+        padding: 1rem;
+        margin: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+      }
+
+      .retry-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        font-weight: 500;
+      }
+
+      .retry-button:hover {
+        background: #c0392b;
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0 1rem 1rem 1rem;
+        flex-wrap: wrap;
+      }
+
+      .quick-action {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #6c5ce7;
+        font-weight: 500;
+      }
+
+      .quick-action:hover {
+        background: #6c5ce7;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(108, 92, 231, 0.2);
+      }
+
       .chat-input-container {
         padding: 1rem;
         background: white;
@@ -216,68 +296,6 @@
       .send-button:disabled {
         opacity: 0.5;
         cursor: not-allowed;
-      }
-
-      .quick-actions {
-        display: flex;
-        gap: 0.5rem;
-        padding: 0 1rem 1rem 1rem;
-        flex-wrap: wrap;
-      }
-
-      .quick-action {
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 1rem;
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        color: #6c5ce7;
-        font-weight: 500;
-      }
-
-      .quick-action:hover {
-        background: #6c5ce7;
-        color: white;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(108, 92, 231, 0.2);
-      }
-
-      .welcome-message {
-        text-align: center;
-        padding: 2rem 1rem;
-        color: #636e72;
-      }
-
-      .welcome-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-      }
-
-      .connection-error {
-        background: #ffe6e6;
-        border: 1px solid #ffcccc;
-        color: #e74c3c;
-        padding: 1rem;
-        margin: 1rem;
-        border-radius: 0.5rem;
-        text-align: center;
-      }
-
-      .retry-button {
-        background: #e74c3c;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        margin-top: 0.5rem;
-        font-weight: 500;
-      }
-
-      .retry-button:hover {
-        background: #c0392b;
       }
 
       .config-panel {
@@ -370,155 +388,140 @@
         font-size: 0.85rem;
         color: #2980b9;
       }
-
-      .settings-icon {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: white;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        font-size: 1rem;
-      }
-
-      .settings-icon:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
     </style>
   </head>
   <body>
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="copilot-icon">🏥</div>
-        <div class="header-info">
-          <h1>Medical AI Assistant</h1>
-          <p>Your intelligent assistant for patient data management</p>
-        </div>
-        <div class="connection-status" id="connection-status">
-          Connecting...
-        </div>
-        <button
-          class="settings-icon"
-          onclick="showConfig()"
-          title="Ozwell AI Settings"
-        >
-          ⚙️
-        </button>
-      </div>
-
-      <div id="chat-messages" class="chat-messages">
-        <div id="welcome-state" class="welcome-message">
-          <div class="welcome-icon">🏥</div>
-          <div>
-            Hi! I'm your Medical AI Assistant. I can help you manage patient
-            data, update vital signs, and access medical records.
+    <div id="app">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="copilot-icon">🏥</div>
+          <div class="header-info">
+            <h1>Ozwel AI Assistant</h1>
+            <p>Your intelligent assistant for medical data management</p>
           </div>
-          <div style="margin-top: 1rem; font-size: 0.9rem">
-            Try asking me "Show patient info" or "Update blood pressure to
-            120/80"
+          <div class="connection-status" id="connection-status">
+            Connecting...
           </div>
+          <button
+            class="settings-icon"
+            onclick="showConfig()"
+            title="Ozwel AI Settings"
+          >
+            ⚙️
+          </button>
         </div>
 
-        <div
-          id="connection-error"
-          class="connection-error"
-          style="display: none"
-        >
-          <div>❌ Unable to connect to the patient dashboard</div>
-          <div style="font-size: 0.9rem; margin-top: 0.5rem">
-            I can't access patient data right now. Please check your connection.
+        <div id="chat-messages" class="chat-messages">
+          <div id="welcome-state" class="welcome-message">
+            <div class="welcome-icon">🏥</div>
+            <div>
+              Hi! I'm your Ozwel AI Assistant. I can help you manage patient
+              data, update vital signs, and access medical records.
+            </div>
+            <div style="margin-top: 1rem; font-size: 0.9rem">
+              Try asking me "Show patient info" or "Update blood pressure to
+              120/80"
+            </div>
           </div>
-          <button class="retry-button" onclick="reconnect()">
-            Retry Connection
+
+          <div
+            id="connection-error"
+            class="connection-error"
+            style="display: none"
+          >
+            <div>❌ Unable to connect to the patient dashboard</div>
+            <div style="font-size: 0.9rem; margin-top: 0.5rem">
+              I can't access patient data right now. Please check your connection.
+            </div>
+            <button class="retry-button" onclick="reconnect()">
+              Retry Connection
+            </button>
+          </div>
+        </div>
+
+        <div class="typing-indicator" id="typing-indicator">
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
+        <div class="quick-actions" id="quick-actions" style="display: none">
+          <button
+            class="quick-action"
+            onclick="sendQuickMessage('Show patient information')"
+          >
+            👤 Patient Info
+          </button>
+          <button
+            class="quick-action"
+            onclick="sendQuickMessage('Update blood pressure to 120/80')"
+          >
+            🩺 Blood Pressure
+          </button>
+          <button
+            class="quick-action"
+            onclick="sendQuickMessage('Update blood sugar to 95')"
+          >
+            📊 Blood Sugar
+          </button>
+          <button
+            class="quick-action"
+            onclick="sendQuickMessage('Add new medication')"
+          >
+            💊 Add Medication
+          </button>
+        </div>
+
+        <div class="chat-input-container">
+          <textarea
+            id="chat-input"
+            class="chat-input"
+            placeholder="Ask me about patient data, vital signs, or medical records..."
+            rows="1"
+            disabled
+          ></textarea>
+          <button
+            id="send-button"
+            class="send-button"
+            onclick="sendMessage()"
+            disabled
+          >
+            ➤
           </button>
         </div>
       </div>
 
-      <div class="typing-indicator" id="typing-indicator">
-        <div class="typing-dots">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
-      </div>
+      <!-- Ozwel AI Configuration Panel -->
+      <div class="config-panel" id="config-panel">
+        <div class="config-content">
+          <div class="config-header">
+            <h2>🔧 Ozwel AI Configuration</h2>
+            <p>Configure your Ozwel AI API key for enhanced AI responses</p>
+          </div>
 
-      <div class="quick-actions" id="quick-actions" style="display: none">
-        <button
-          class="quick-action"
-          onclick="sendQuickMessage('Show patient information')"
-        >
-          👤 Patient Info
-        </button>
-        <button
-          class="quick-action"
-          onclick="sendQuickMessage('Update blood pressure to 120/80')"
-        >
-          🩺 Blood Pressure
-        </button>
-        <button
-          class="quick-action"
-          onclick="sendQuickMessage('Update blood sugar to 95')"
-        >
-          📊 Blood Sugar
-        </button>
-        <button
-          class="quick-action"
-          onclick="sendQuickMessage('Add new medication')"
-        >
-          💊 Add Medication
-        </button>
-      </div>
+          <div class="api-key-info">
+            💡 <strong>Info:</strong> Your API key is stored locally in your
+            browser and never sent to our servers. Without an API key, the chatbot
+            will use simple rule-based responses.
+          </div>
 
-      <div class="chat-input-container">
-        <textarea
-          id="chat-input"
-          class="chat-input"
-          placeholder="Ask me about patient data, vital signs, or medical records..."
-          rows="1"
-          disabled
-        ></textarea>
-        <button
-          id="send-button"
-          class="send-button"
-          onclick="sendMessage()"
-          disabled
-        >
-          ➤
-        </button>
-      </div>
-    </div>
+          <input
+            type="password"
+            id="api-key-input"
+            class="config-input"
+            placeholder="sk-..."
+          />
 
-    <!-- OpenAI Configuration Panel -->
-    <div class="config-panel" id="config-panel">
-      <div class="config-content">
-        <div class="config-header">
-          <h2>🔧 Ozwell AI Configuration</h2>
-          <p>Configure your Ozwell AI API key for enhanced AI responses</p>
-        </div>
-
-        <div class="api-key-info">
-          💡 <strong>Info:</strong> Your API key is stored locally in your
-          browser and never sent to our servers. Without an API key, the copilot
-          will use simple rule-based responses.
-        </div>
-
-        <input
-          type="password"
-          id="api-key-input"
-          class="config-input"
-          placeholder="sk-..."
-        />
-
-        <div class="config-buttons">
-          <button class="config-button secondary" onclick="hideConfig()">
-            Cancel
-          </button>
-          <button class="config-button primary" onclick="saveApiKey()">
-            Save
-          </button>
+          <div class="config-buttons">
+            <button class="config-button secondary" onclick="hideConfig()">
+              Cancel
+            </button>
+            <button class="config-button primary" onclick="saveApiKey()">
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -611,7 +614,6 @@
       });
     </script>
 
-    <!-- Load the main client application -->
-    <script type="module" src="./dist/client.js"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

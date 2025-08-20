@@ -1,4 +1,4 @@
-// Type definitions for Medical AI Chatbot
+// Type definitions for Ozwel AI Chatbot
 
 export interface ChatMessage {
   id: string;
@@ -83,7 +83,7 @@ export interface HealthCheckResponse {
   status: string;
   timestamp: string;
   uptime: number;
-  memory: NodeJS.MemoryUsage;
+  memory: any; // NodeJS.MemoryUsage
   version: string;
 }
 
@@ -103,14 +103,19 @@ declare global {
     showConfig?: () => void;
     hideConfig?: () => void;
     saveApiKey?: () => void;
-    chatbot?: SimpleChatbot;
+    chatbot?: OzwelAIChatbot;
     copilotApp?: {
       reinitialize: () => void;
+    };
+    OzwelAI?: {
+      chatbot: OzwelAIChatbot;
+      version: string;
+      init: () => void;
     };
   }
 }
 
-export interface SimpleChatbot {
+export interface OzwelAIChatbot {
   messages: ChatMessage[];
   isConnected: boolean;
   apiKey: string | null;
