@@ -42,7 +42,7 @@ An embeddable medical AI assistant designed for patient data management and heal
 
 4. **Open your browser**
    ```
-   http://localhost:5173
+   http://localhost:4173
    ```
 
 ## 📦 Production Build
